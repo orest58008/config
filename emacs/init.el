@@ -3,7 +3,10 @@
                                         ; VISUAL SETTINGS
 ;; Display line and column numbers
 (column-number-mode)
-(global-display-line-numbers-mode)
+(add-hook 'org-mode-hook  'display-line-numbers-mode)
+(add-hook 'conf-mode-hook 'display-line-numbers-mode)
+(add-hook 'prog-mode-hook 'display-line-numbers-mode)
+(add-hook 'text-mode-hook 'display-line-numbers-mode)
 
 ;; Disable annoying bars
 (scroll-bar-mode -1)
@@ -26,7 +29,10 @@
 
 ;; Set up text width
 (setopt fill-column 99)
-(global-display-fill-column-indicator-mode)
+(add-hook 'org-mode-hook  'display-fill-column-indicator-mode)
+(add-hook 'conf-mode-hook 'display-fill-column-indicator-mode)
+(add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
+(add-hook 'text-mode-hook 'display-fill-column-indicator-mode)
 
                                         ; PACKAGE SETUP
 ;; Set up straight.el
@@ -51,26 +57,47 @@
 (setq straight-use-package-by-default t)
 
                                         ; PACKAGES
-;; company
-(use-package company
-  :commands company-mode
-  :hook (prog-mode . company-mode))
+;; corfu
+(use-package corfu
+  :init
+  (setq-default corfu-auto       t
+                corfu-auto-delay 0
+                corfu-popupinfo-delay 0
+                corfu-popupinfo-hide  nil
+                corfu-popupinfo-mode  t)
+  :hook prog-mode)
 
 ;; dashboard
 (use-package dashboard
   :config (dashboard-setup-startup-hook)
-  :custom (dashboard-items '((recents  . 5)
+  :custom (dashboard-items '((recents  . 10)
                              (projects . 5)
                              (agenda   . 5)))
   :custom (dashboard-startup-banner 'logo))
 
-;; elcord
-(use-package elcord
-  :config (elcord-mode))
+;; emacs-rpc
+(use-package presence
+  :straight (presence
+             :type git
+             :host github
+             :repo "richardhbtz/emacs-rpc")
+  :catch (lambda (keyword err)
+           (message (error-message-string err)))
+  :config (presence-mode)
+  :hook (conf-mode
+         org-mode
+         prog-mode
+         kill-emacs))
 
 ;; evil
 (use-package evil
-  :config (evil-mode 1))
+  :bind (:map evil-normal-state-map
+              ("C-<tab>" . other-window)
+              ("C-b"     . eval-buffer))
+  :bind (:map evil-insert-state-map
+              ("C-<tab>" . other-window))
+  :custom (evil-undo-system 'undo-redo))
+(evil-mode t)
 
 ;; flexoki-themes
 (use-package flexoki-themes
@@ -80,11 +107,13 @@
 
 ;; flycheck
 (use-package flycheck
-  :hook (prog-mode . flycheck-mode))
+  :commands flycheck
+  :hook prog-mode)
 
 ;; git-gutter
 (use-package git-gutter
-  :hook (prog-mode . git-gutter-mode))
+  :commands git-gutter-mode
+  :hook prog-mode)
 
 ;; ligature
 (use-package ligature
@@ -99,7 +128,19 @@
                                                "=:" "=<" "=<<" "=<=" "==" "===" "===>" "==>" "=>"
                                                "=>=" "=>>" ">-" ">=" ">>-" ">>=" "[|" "\\/" "__"
                                                "{|" "|-" "|>" "|]" "|}" "~=" "~~>" )) ; Iosevka
-  :hook (prog-mode . ligature-mode))
+  :hook (prog-mode conf-mode))
+
+;; neotree
+(use-package neotree
+  :after (nerd-icons)
+  :bind (:map evil-normal-state-map
+              ("C-t" . neotree-toggle)
+              ("RET" . neotree-enter)
+              ("SPC" . neotree-quick-look))
+  :custom
+  (neo-theme 'nerd-icons)
+  (neo-window-width 26))
+(use-package nerd-icons)
 
 ;; projectile
 (use-package projectile
@@ -110,18 +151,27 @@
 ;; LSP
 (use-package lsp-mode
   :commands lsp
-  :hook ((python-mode ; python-lsp-server
-          ) . lsp))
+  :custom (lsp-completion-provider :none)                                              ; 
+  :init (defun my/lsp-mode-setup-completion ()                                         ;
+          (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults)) ; corfu
+                '(flex)))                                                              ;
+  :hook (lsp-completion-mode . my/lsp-mode-setup-completion)                           ;
+  :hook (nix-mode           ; nil
+         python-ts-mode     ; python-lsp-server
+         typescript-ts-mode ; deno lsp
+         ))
 
 ;; Tree-sitter
-;;; Define tree-sitter languages
+;;; define tree-sitter languages
 (setq major-mode-remap-alist '((python-mode     . python-ts-mode)
-                               (typescript-mode . typescript-ts-mode)
-                               ))
+                               (typescript-mode . typescript-ts-mode)))
 
 ;; Emacs Lisp
-;;; Disable certain modes
+;;; disable certain modes
 (defun disable-prog-modes ()
-  "Disable modes commonly linked to `prog-mode`."
   (flycheck-mode -1))
 (add-hook 'emacs-lisp-mode-hook #'disable-prog-modes)
+
+;; Nix
+(use-package nix-mode
+  :mode "\\.nix\\'")

@@ -53,8 +53,8 @@
         aspellDicts.uk
         aspellDicts.en
         emacs29-pgtk
-        gcc
         nil
+        python3Packages.pandas
         python3Packages.python-lsp-server
         tree-sitter-grammars.tree-sitter-python
         tree-sitter-grammars.tree-sitter-typescript
@@ -78,7 +78,6 @@
         gnome-tweaks
         inkscape
         libreoffice
-        lutris
         nautilus
         nicotine-plus
         obs-studio
@@ -91,9 +90,10 @@
       ];
 
       servicePackages = with pkgs; [
-        arrpc
         linuxHeaders
-        wineWowPackages.stable
+        gcc
+        binutils
+        openvpn
         wineWowPackages.wayland
         wl-clipboard
       ];

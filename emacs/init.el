@@ -73,10 +73,17 @@
 (use-package dashboard
   :after (projectile)
   :config (dashboard-setup-startup-hook)
-  :custom (dashboard-items '((recents  . 15)
-                             (projects . 5)
-                             (agenda   . 5)))
-  :custom (dashboard-startup-banner 'logo))
+  :custom
+  (dashboard-banner-logo-title nil)
+  (dashboard-center-content t)
+  (dashboard-icon-type 'nerd-icons)
+  (dashboard-items '((recents  . 15)
+                     (projects . 5)
+                     (agenda   . 5)))
+  (dashboard-projects-backend 'projectile)
+  (dashboard-set-heading-icons t)
+  (dashboard-set-file-icons t)
+  (dashboard-startup-banner (concat user-emacs-directory "GNUEmacs.png")))
 
 ;; elcord
 (use-package elcord
@@ -96,8 +103,9 @@
 ;; flexoki-themes
 (use-package flexoki-themes
   :config (load-theme 'flexoki-themes-dark t)
-  :custom (flexoki-themes-use-bold-builtins t)
-  :custom (flexoki-themes-use-bold-keywords t))
+  :custom
+  (flexoki-themes-use-bold-builtins t)
+  (flexoki-themes-use-bold-keywords t))
 
 ;; flycheck
 (use-package flycheck
@@ -144,6 +152,7 @@
                                         ; LANGUAGES
 ;; LSP
 (use-package lsp-mode
+  :after (projectile)
   :commands lsp
   :custom (lsp-completion-provider :none)                                              ; 
   :init (defun my/lsp-mode-setup-completion ()                                         ;

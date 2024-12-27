@@ -62,11 +62,6 @@
   };
 
   services = {
-    emacs = {
-      enable = true;
-      package = pkgs.emacs29-pgtk;
-    };
-
     gnome = {
       core-utilities.enable = false;
       sushi.enable = true;

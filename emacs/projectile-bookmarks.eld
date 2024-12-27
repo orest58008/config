@@ -1,1 +1,1 @@
-("/data/projects/,JOB/labx/data-scripts/")
+("/data/projects/!JOB/labx/binance-balance/" "/data/projects/JAVA/orests-tool-switcher-template-1.21.1/")

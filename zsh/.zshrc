@@ -1,11 +1,12 @@
 # XDG fixes
 export XDG_CONFIG_HOME="$HOME/.config"
-export JAVA_TOOL_OPTIONS="-Djava.util.prefs.userRoot=$XDG_CONFIG_HOME/java"
 export CABAL_CONFIG="$XDG_CONFIG_HOME"/cabal/config
 export DOCKER_CONFIG="$XDG_CONFIG_HOME"/docker
 export GTK2_RC_FILES="$XDG_CONFIG_HOME"/gtk-2.0/gtkrc
+export PYTHONSTARTUP="$XDG_CONFIG_HOME"/pythonrc
 export STARSHIP_CONFIG="$XDG_CONFIG_HOME"/starship/starship.toml
-export VIMINIT='let $MYVIMRC = !has("nvim") ? "$XDG_CONFIG_HOME/vim/vimrc" : "$XDG_CONFIG_HOME/nvim/init.lua" | so $MYVIMRC'
+export TEXMFHOME="$XDG_CONFIG_HOME"/texmf
+export VIMINIT='let $MYVIMRC = !has("nvim") ? "$XDG_CONFIG_HOME/vim/vimrc" : "$XDG_CONFIG_HOME/nvim/init.vim" | so $MYVIMRC'
 alias d-fi="d-fi -conf $XDG_CONFIG_HOME/d-fi/config.json"
 
 export XDG_DATA_HOME="$HOME/.local/share"
@@ -49,7 +50,7 @@ if [[ $- == *i* ]]; then
    mycofetch -m $XDG_CONFIG_HOME/mycofetch/template.mfc
 
    # Shell configuration
-   setopt autocd beep extendedglob nomatch
+   setopt autocd beep noextendedglob nomatch
 
    # History configuration
    HISTSIZE=5000
@@ -84,7 +85,7 @@ if [[ $- == *i* ]]; then
    alias imv=imv-dir
    alias ls="eza -F -Ghl --git --icons --sort type"
    alias mv="mv -v"
-   alias mycofetch="mycofetch -m $XDG_CONFIG_HOME/mycofetch/template.mfc"
+   alias mycofetch="$HOME/.local/bin/mycofetch -m $XDG_CONFIG_HOME/mycofetch/template.mfc"
    alias rg="rg -ip"
    alias xclass="xprop | grep WM_CLASS | awk '{ print $4 }'"
    find /opt/plan9 &> /dev/null && alias 9=/opt/plan9/bin/9

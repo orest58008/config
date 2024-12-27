@@ -50,14 +50,13 @@
 
       emacsPackages = with pkgs; [
         aspell
-        aspellDicts.uk
         aspellDicts.en
+        aspellDicts.uk
+        deno
         emacs29-pgtk
+        jdt-language-server
         nil
-        python3Packages.pandas
         python3Packages.python-lsp-server
-        tree-sitter-grammars.tree-sitter-python
-        tree-sitter-grammars.tree-sitter-typescript
       ];
 
       programPackages = with pkgs; [
@@ -81,6 +80,7 @@
         nautilus
         nicotine-plus
         obs-studio
+        pitivi
         rhythmbox
         steam
         telegram-desktop

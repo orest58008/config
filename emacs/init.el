@@ -64,7 +64,7 @@
 (use-package corfu
   :init
   (setq-default corfu-auto       t
-                corfu-auto-delay 0.5
+                corfu-auto-delay 0.3
                 corfu-popupinfo-delay 0)
   :hook (prog-mode conf-mode)
   :hook (corfu-mode . corfu-popupinfo-mode))
@@ -73,17 +73,21 @@
 (use-package dashboard
   :after (projectile)
   :config (dashboard-setup-startup-hook)
-  :custom
+  :custom ; banner config
   (dashboard-banner-logo-title nil)
+  (dashboard-startup-banner (concat user-emacs-directory "GNUEmacs.png"))
+  :custom ; center content vertically and horisontally
   (dashboard-center-content t)
+  (dashboard-vertically-center-content t)
+  :custom ; display icons
   (dashboard-icon-type 'nerd-icons)
+  (dashboard-set-file-icons t)
+  (dashboard-set-heading-icons t)
+  :custom ; display items
   (dashboard-items '((recents  . 15)
                      (projects . 5)
                      (agenda   . 5)))
-  (dashboard-projects-backend 'projectile)
-  (dashboard-set-heading-icons t)
-  (dashboard-set-file-icons t)
-  (dashboard-startup-banner (concat user-emacs-directory "GNUEmacs.png")))
+  (dashboard-projects-backend 'projectile))
 
 ;; elcord
 (use-package elcord
@@ -100,7 +104,7 @@
   :custom (evil-undo-system 'undo-redo))
 (evil-mode t)
 
-;; flexoki-themes
+;; flexoki themes
 (use-package flexoki-themes
   :config (load-theme 'flexoki-themes-dark t)
   :custom
@@ -109,17 +113,20 @@
 
 ;; flycheck
 (use-package flycheck
-  :commands flycheck
   :hook prog-mode)
 
-;; git-gutter
+;; git gutter
 (use-package git-gutter
-  :commands git-gutter-mode
   :hook prog-mode)
+
+;; hide mode line
+(use-package hide-mode-line
+  :hook (dashboard-mode
+         neotree-mode
+         term-mode))
 
 ;; ligature
 (use-package ligature
-  :commands ligature-mode
   :config (ligature-set-ligatures 'prog-mode '("!=" "!==" "!===" "(*" "*)" "*+" "*/" "*=" "+*" "++"
                                                "+++" "--->" "-->" "-<" "-<-" "-<<" "->" "->-" "->>"
                                                "-|" ".>" "/*" "/=" "/>" "/\\" "::" ":::" ":=" ":>"
@@ -141,7 +148,7 @@
               ("SPC" . neotree-quick-look))
   :custom
   (neo-theme 'nerd-icons)
-  (neo-window-width 26))
+  (neo-window-width 30))
 (use-package nerd-icons)
 
 ;; projectile
@@ -153,7 +160,6 @@
 ;; LSP
 (use-package lsp-mode
   :after (projectile)
-  :commands lsp
   :custom (lsp-completion-provider :none)                                              ; 
   :init (defun my/lsp-mode-setup-completion ()                                         ;
           (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults)) ; corfu
@@ -171,12 +177,29 @@
                                (typescript-mode . typescript-ts-mode)))
 
 ;; Emacs Lisp
-;;; disable certain modes
-(defun disable-prog-modes ()
+(defun disable-prog-modes () ; disable certain modes
   (flycheck-mode -1))
 (add-hook 'emacs-lisp-mode-hook #'disable-prog-modes)
 
+;; Java
+(require 'lsp-mode)
+(lsp-register-client (make-lsp-client
+                      :new-connection (lsp-stdio-connection "jdtls")
+                      :activation-fn  (lsp-activate-on "java")
+                      :server-id 'jdtls))
+
 ;; Org
-;;; pretty org
 (use-package org-modern
   :hook org-mode)
+
+                                        ; TERMINAL
+;; VSCode-like terminal
+(defun term-in-new-window-below ()
+  (interactive)
+  (split-window-below)
+  (other-window 1)
+  (shrink-window (- (window-height) 12))
+  (term (getenv "SHELL"))
+  (evil-insert-state))
+(evil-define-key 'normal 'global        (kbd "C-`") 'term-in-new-window-below)
+(evil-define-key 'insert 'term-mode-map (kbd "C-`") 'delete-window)

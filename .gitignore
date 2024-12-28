@@ -7,13 +7,10 @@ VSCodium/User/*Storage
 
 btop/btop.log
 
-emacs/eln-cache
-emacs/elpa
-emacs/elpaca
-emacs/recentf
-emacs/straight
-emacs/url
-emacs/workspace
+emacs/*
+!emacs/*.el
+!emacs/GNUEmacs.png
+!emacs/tree-sitter
 
 fish/completions
 fish/conf.d

@@ -17,6 +17,7 @@ fish/conf.d
 fish/fish_variables
 fish/functions
 
+nixos/flake.lock
 nixos/hardware-configuration.nix
 
 vim/autoload

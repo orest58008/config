@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   nix = {
@@ -24,6 +24,9 @@
 
   environment = {
     systemPackages = let
+      unstable      = inputs.nixpkgs-unstable.legacyPackages."${pkgs.system}";
+      fjordlauncher = inputs.fjordlauncher.packages."${pkgs.system}";
+
       consolePackages = with pkgs; [
         bat
         distrobox
@@ -31,7 +34,6 @@
         git
         git-lfs
         gnupg
-        imagemagick
         starship
         tealdeer
         trash-cli
@@ -49,11 +51,9 @@
       ];
 
       emacsPackages = with pkgs; [
-        aspell
-        aspellDicts.en
-        aspellDicts.uk
         deno
         emacs29-pgtk
+        (haskell-language-server.override { supportedGhcVersions = [ "96" ]; })
         jdt-language-server
         nil
         python3Packages.python-lsp-server
@@ -68,24 +68,23 @@
         evince
         file-roller
         firefox
+        fjordlauncher.fjordlauncher
         fragments
         geary
         gimp
         gnome-calculator
         gnome-sound-recorder
-        gnome-terminal
         gnome-tweaks
         inkscape
         libreoffice
         nautilus
         nicotine-plus
         obs-studio
-        pitivi
         rhythmbox
         steam
         telegram-desktop
+        unstable.ghostty
         vesktop
-        vscodium-fhs
         zoom-us
       ];
 
@@ -94,6 +93,7 @@
         gcc
         binutils
         openvpn
+        steam-run
         wineWowPackages.wayland
         wl-clipboard
       ];

@@ -1,19 +1,18 @@
 ;; -*- lexical-binding: t; -*-
 
                                         ; VISUAL SETTINGS
-;; Disable annoying bars
+;; Disable useless bars and startup screen
 (scroll-bar-mode -1)
 (tool-bar-mode -1)
-
-;; Disable startup screen
 (setq inhibit-startup-screen t)
 
 ;; Display line and column numbers
 (column-number-mode)
-(add-hook 'org-mode-hook  'display-line-numbers-mode)
-(add-hook 'conf-mode-hook 'display-line-numbers-mode)
-(add-hook 'prog-mode-hook 'display-line-numbers-mode)
-(add-hook 'text-mode-hook 'display-line-numbers-mode)
+(use-package emacs
+  :hook ((conf-mode
+          org-mode
+          prog-mode
+          text-mode) . display-line-numbers-mode))
 
 ;; Set monospace font
 (set-frame-font "monospace 12" nil t)
@@ -22,20 +21,23 @@
 ;; Automatch brackets
 (add-hook 'prog-mode-hook 'electric-pair-mode)
 
-;; Disable tabs
+;; Indentation
 (setq-default indent-tabs-mode nil)
 (setq-default tab-width 3)
 
-;; Set up spellchecking
-(add-hook 'org-mode-hook 'flyspell-mode)
-(add-hook 'prog-mode-hook 'flyspell-prog-mode)
+;; Remove *scratch* buffer
+(when (get-buffer "*scratch*") (kill-buffer "*scratch*"))
+
+;; Save between sessions
+(desktop-save-mode t)
 
 ;; Set up text width
 (setopt fill-column 99)
-(add-hook 'org-mode-hook  'display-fill-column-indicator-mode)
-(add-hook 'conf-mode-hook 'display-fill-column-indicator-mode)
-(add-hook 'prog-mode-hook 'display-fill-column-indicator-mode)
-(add-hook 'text-mode-hook 'display-fill-column-indicator-mode)
+(use-package emacs
+  :hook ((conf-mode
+          org-mode
+          prog-mode
+          text-mode) . display-fill-column-indicator-mode))
 
                                         ; PACKAGE SETUP
 ;; Set up straight.el
@@ -60,18 +62,38 @@
 (setq straight-use-package-by-default t)
 
                                         ; PACKAGES
+;; centaur tabs
+(use-package centaur-tabs
+  :after nerd-icons
+  :config
+  (centaur-tabs-mode)
+  (centaur-tabs-enable-buffer-alphabetical-reordering)
+  :bind
+  ("C-<tab>"   . centaur-tabs-forward)
+  ("C-S-<tab>" . centaur-tabs-backward)
+  :custom ; tab cycling and reordering
+  (centaur-tabs-cycle-scope 'tabs)
+  (centaur-tabs-adjust-buffer-order t)
+  :custom ; display icons and modified marker
+  (centaur-tabs-set-icons t)
+  (centaur-tabs-icon-type 'nerd-icons)
+  (centaur-tabs-set-modified-marker t)
+  (centaur-tabs-modified-marker "~")
+  :hook ; disable tabs in dashboard
+  ((dashboard-mode
+    term-mode) . centaur-tabs-local-mode))
+
 ;; corfu
 (use-package corfu
-  :init
-  (setq-default corfu-auto       t
-                corfu-auto-delay 0.3
-                corfu-popupinfo-delay 0)
+  :init (setq-default corfu-auto       t
+                      corfu-auto-delay 0.25
+                      corfu-popupinfo-delay 0)
   :hook (prog-mode conf-mode)
   :hook (corfu-mode . corfu-popupinfo-mode))
 
 ;; dashboard
 (use-package dashboard
-  :after (projectile)
+  :after nerd-icons
   :config (dashboard-setup-startup-hook)
   :custom ; banner config
   (dashboard-banner-logo-title nil)
@@ -95,11 +117,7 @@
 
 ;; evil
 (use-package evil
-  :bind (:map evil-normal-state-map
-              ("C-<tab>" . other-window)
-              ("C-b"     . eval-buffer))
   :bind (:map evil-insert-state-map
-              ("C-<tab>" . other-window)
               ("C-S-v"   . clipboard-yank))
   :custom (evil-undo-system 'undo-redo))
 (evil-mode t)
@@ -141,65 +159,65 @@
 
 ;; neotree
 (use-package neotree
-  :after (nerd-icons)
+  :after nerd-icons
   :bind (:map evil-normal-state-map
               ("C-t" . neotree-toggle)
               ("RET" . neotree-enter)
               ("SPC" . neotree-quick-look))
+  :custom ; projectile support
+  (projectile-switch-project-action 'neotree-projectile-action)
   :custom
   (neo-theme 'nerd-icons)
   (neo-window-width 30))
+
+;; nerd icons
 (use-package nerd-icons)
 
 ;; projectile
 (use-package projectile
-  :custom (projectile-indexing-method 'alien)
-  :init (projectile-mode +1))
+  :init (projectile-mode t)
+  :hook (project-find-functions . project-projectile))
 
                                         ; LANGUAGES
 ;; LSP
 (use-package lsp-mode
-  :after (projectile)
   :custom (lsp-completion-provider :none)                                              ; 
   :init (defun my/lsp-mode-setup-completion ()                                         ;
           (setf (alist-get 'styles (alist-get 'lsp-capf completion-category-defaults)) ; corfu
                 '(flex)))                                                              ;
   :hook (lsp-completion-mode . my/lsp-mode-setup-completion)                           ;
-  :hook (java-ts-mode       ; jdtls
-         python-ts-mode     ; python-lsp-server
-         typescript-ts-mode ; deno lsp
+  :hook (haskell-mode    ; haskell-language-server
+         java-mode       ; jdtls
+         python-mode     ; python-lsp-server
+         typescript-mode ; deno lsp
          ))
 
-;; Tree-sitter
-;;; define tree-sitter languages
-(setq major-mode-remap-alist '((java-mode       . java-ts-mode)
-                               (python-mode     . python-ts-mode)
-                               (typescript-mode . typescript-ts-mode)))
-
 ;; Emacs Lisp
-(defun disable-prog-modes () ; disable certain modes
+(defun disable-prog-modes ()
+  "Disable certain modes usually hooked to `prog-mode`."
   (flycheck-mode -1))
 (add-hook 'emacs-lisp-mode-hook #'disable-prog-modes)
 
-;; Java
-(require 'lsp-mode)
-(lsp-register-client (make-lsp-client
-                      :new-connection (lsp-stdio-connection "jdtls")
-                      :activation-fn  (lsp-activate-on "java")
-                      :server-id 'jdtls))
+;; Haskell
+(use-package haskell-mode)
+(use-package lsp-haskell)
 
 ;; Org
 (use-package org-modern
   :hook org-mode)
 
-                                        ; TERMINAL
-;; VSCode-like terminal
-(defun term-in-new-window-below ()
+                                        ; CUSTOM FUNCTIONS
+;; VSCode-like pop-up terminal
+(defun popup-term-below (&optional HEIGHT)
   (interactive)
   (split-window-below)
   (other-window 1)
-  (shrink-window (- (window-height) 12))
+  (shrink-window (- (window-height) (or HEIGHT 10)))
   (term (getenv "SHELL"))
+  (set-process-query-on-exit-flag
+   (get-buffer-process (current-buffer)) nil)
   (evil-insert-state))
-(evil-define-key 'normal 'global        (kbd "C-`") 'term-in-new-window-below)
-(evil-define-key 'insert 'term-mode-map (kbd "C-`") 'delete-window)
+(evil-define-key '(insert normal) 'global
+  (kbd "C-`") 'popup-term-below)
+(evil-define-key 'insert 'term-mode-map
+  (kbd "C-`") 'delete-window)

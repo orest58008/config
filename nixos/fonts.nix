@@ -1,22 +1,23 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
-  fonts = {    
+  fonts = let
+    unstable = inputs.nixpkgs-unstable.legacyPackages."${pkgs.system}";
+  in {
     packages = with pkgs; [
-      fira-code-nerdfont
-      iosevka
-      source-sans
       source-han-sans
-      source-serif
       source-han-serif
+      source-sans
+      source-serif
       twitter-color-emoji
+      unstable.nerd-fonts.iosevka
     ];
 
     fontconfig = {
       defaultFonts = {
         sansSerif = [ "Source Sans 3"];
         serif = [ "Source Serif 4" ];
-        monospace = [ "Iosevka Extended" "FiraCode Nerd Font" ];
+        monospace = [ "Iosevka Extended" "Iosevka Nerd Font Propo" ];
         emoji = [ "Twitter Color Emoji" ];
       };
     };

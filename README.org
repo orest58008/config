@@ -9,7 +9,7 @@
 + DE - GNOME
 ** Terminal
 + Shell - zsh
-+ Terminal emulator - gnome-terminal
++ Terminal emulator - ghostty
 ** Apps
 + Browser - Firefox
 + Soulseek client - Nicotine+

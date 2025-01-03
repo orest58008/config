@@ -1,0 +1,10 @@
+font-family = monospace
+font-size = 10
+
+theme = flexoki-dark
+adw-toolbar-style = raised
+
+window-padding-x = 3
+
+linux-cgroup = always
+term = xterm-256color

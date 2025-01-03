@@ -6,8 +6,9 @@
     settings = {
       auto-optimise-store = true;
       experimental-features = [
-        "nix-command"
         "flakes"
+        "nix-command"
+        "pipe-operator"
       ];
     };
   };
@@ -16,6 +17,10 @@
 
   programs = {
     gnupg.agent.enable = true;
+    steam = {
+      enable = true;
+      extest.enable = true;
+    };
     zsh = {
       enable = true;
       vteIntegration = true;
@@ -89,9 +94,10 @@
       ];
 
       servicePackages = with pkgs; [
-        linuxHeaders
-        gcc
         binutils
+        gcc
+        linuxHeaders
+        openjdk
         openvpn
         steam-run
         wineWowPackages.wayland

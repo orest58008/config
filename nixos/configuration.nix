@@ -2,13 +2,15 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, lib, pkgs, ... }:
 
 {
   imports = [ ./hardware-configuration.nix ./fonts.nix ./packages.nix ./users.nix ];
 
   boot = {
     # crashDump.enable = true;
+
+    kernelParams = [ "iommu=soft" ];
 
     loader = {
       systemd-boot.enable = true;
@@ -41,19 +43,18 @@
   };
 
   networking = {
-    wireless.enable = false;
-
-    networkmanager.enable = true;
-
     firewall = {
       enable = true;
       allowedTCPPorts = [  ];
       allowedUDPPorts = [  ];
     };
-  };
 
-  nix.settings = {
-    use-xdg-base-directories = true;
+    hostName = with builtins; concatStringsSep "-" [
+      (readFile "/sys/devices/virtual/dmi/id/product_name")
+      "nixos"
+    ] |> replaceStrings ["\n"] [""];
+
+    networkmanager.enable = true;
   };
 
   qt = {
@@ -96,11 +97,11 @@
     Defaults env_keep += \"EDITOR VIMINIT XDG_CONFIG_HOME XDG_STATE_HOME\"";
   };
 
+  system.stateVersion = config.system.nixos.release;
+  
   time.timeZone = "Europe/Kyiv";
 
   virtualisation.docker.enable = true;
 
   xdg.portal.enable = true;
-  
-  system.stateVersion = "24.05"; # Don't change
 }

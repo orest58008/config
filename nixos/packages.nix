@@ -33,17 +33,20 @@
       fjordlauncher = inputs.fjordlauncher.packages."${pkgs.system}";
 
       consolePackages = with pkgs; [
+        aria2
         bat
         distrobox
         eza
+        fd
         git
         git-lfs
+        gnumake
         gnupg
+        jq
         starship
         tealdeer
         trash-cli
         vim
-        wlprop
         zsh
       ];
 

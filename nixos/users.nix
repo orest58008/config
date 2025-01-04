@@ -4,7 +4,12 @@
   users.users.orest = {
     isNormalUser = true;
     description = "Орест";
-    extraGroups = [ "docker" "networkmanager" "wheel" ];
+    extraGroups = [
+      "docker"
+      "networkmanager"
+      "wheel"
+      "input"
+    ];
     shell = pkgs.zsh;
   };
 

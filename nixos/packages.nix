@@ -2,6 +2,12 @@
 
 {
   nix = {
+    gc = {
+      automatic = true;
+      dates = "weekly";
+      options = "--delete-older-than 7d";
+      randomizedDelaySec = "1d";
+    };
     package = pkgs.lix;
     settings = {
       auto-optimise-store = true;
@@ -29,7 +35,7 @@
 
   environment = {
     systemPackages = let
-      unstable      = inputs.nixpkgs-unstable.legacyPackages."${pkgs.system}";
+      unstable = inputs.nixpkgs-unstable.legacyPackages."${pkgs.system}";
       fjordlauncher = inputs.fjordlauncher.packages."${pkgs.system}";
 
       consolePackages = with pkgs; [
@@ -99,6 +105,7 @@
       servicePackages = with pkgs; [
         binutils
         gcc
+        groff
         linuxHeaders
         openjdk
         openvpn
@@ -107,7 +114,12 @@
         wl-clipboard
       ];
 
-    in builtins.concatLists
-    [ consolePackages desktopPackages emacsPackages programPackages servicePackages ];
+    in builtins.concatLists [
+      consolePackages
+      desktopPackages
+      emacsPackages
+      programPackages
+      servicePackages
+    ];
   };
 }

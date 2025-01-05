@@ -10,15 +10,19 @@
   boot = {
     # crashDump.enable = true;
 
-    kernelParams = [ "iommu=soft" ];
-
     loader = {
-      systemd-boot.enable = true;
+      systemd-boot = {
+        enable = true;
+        memtest86.enable = true;
+      };
       efi.canTouchEfiVariables = true;
     };
   };
 
-  hardware.pulseaudio.enable = false;
+  hardware = {
+    enableAllFirmware = true;
+    pulseaudio.enable = false;
+  };
 
   i18n = {
     defaultLocale = "en_GB.UTF-8";
@@ -97,7 +101,7 @@
     Defaults env_keep += \"EDITOR VIMINIT XDG_CONFIG_HOME XDG_STATE_HOME\"";
   };
 
-  system.stateVersion = config.system.nixos.release;
+  system.stateVersion = "24.11";
   
   time.timeZone = "Europe/Kyiv";
 

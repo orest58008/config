@@ -1,3 +1,32 @@
+# Languages
+c.symbol         = "\uE61E "
+crystal.symbol   = "\uE62F "
+dart.symbol      = "\uE64C "
+elixir.symbol    = "\uE62D "
+elm.symbol       = "\uE62C "
+golang.symbol    = "\uE65E "
+gradle.symbol    = "\uE660 "
+haskell.symbol   = "\uE61F "
+haxe.symbol      = "\uE7FA "
+java.symbol      = "\uE738 "
+julia.symbol     = "\uE624 "
+kotlin.symbol    = "\uE634 "
+lua.symbol       = "\uE620 "
+meson.symbol     = "\U000F0BD9 "
+nim.symbol       = "\uE677 "
+nix_shell.symbol = "\uE843 "
+nodejs.symbol    = "\uED0D "
+ocaml.symbol     = "\uE67A "
+perl.symbol      = "\uE67E "
+php.symbol       = "\uE608 "
+python.symbol    = "\uE606 "
+rlang.symbol     = "\uE68A "
+ruby.symbol      = "\uE605 "
+rust.symbol      = "\uE68B "
+scala.symbol     = "\uE68E "
+swift.symbol     = "\uE699 "
+zig.symbol       = "\uE6A9 "
+
 # Prompt itself
 format = "$all$username$hostname $directory$character"
 
@@ -12,30 +41,26 @@ show_always = true
 error_symbol = "[>](bold red)"
 success_symbol = "[>](bold green)"
 
-
 # Git
 [git_status]
-ahead = "↑"
-behind = "↓"
-diverged = "↕"
+ahead = "→ "
+behind = "← "
+diverged = "↔ "
 deleted = "×"
 
 [git_branch]
 symbol = " "
 
-
 # Package version
 [package]
 symbol = " "
 
-
-# Languages
+# Makefile
 [custom.make]
 symbol = " "
 detect_files = [ "GNUmakefile", "makefile", "Makefile" ]
 style = "bold yellow"
 format = "via [$symbol($output )]($style)"
-
 
 # OS
 [directory]

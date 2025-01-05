@@ -7,23 +7,26 @@
     fjordlauncher.url    = "github:unmojang/FjordLauncher";
   };
 
-  outputs = { self, nixpkgs, nixos-hardware, ... }@inputs:
-  let
-    motherboard = with builtins; replaceStrings ["\n"] [""] <|
-    readFile "/sys/devices/virtual/dmi/id/product_name";
-  in {
-    nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
-      system = "x86_64-linux";
-      specialArgs = { inherit inputs; };
-      modules = [
-        ./configuration.nix
-      ] ++ ( if motherboard == "MS-7C51"    then [
-        nixos-hardware.nixosModules.common-cpu-amd
-        nixos-hardware.nixosModules.common-cpu-amd-pstate
-        nixos-hardware.nixosModules.common-gpu-amd
-      ] else if motherboard == "20L8S7GJ05" then [
-        nixos-hardware.nixosModules.lenovo-thinkpad-t480s
-      ] else []);
+  outputs = { self, nixpkgs, ... }@inputs:
+    let
+      motherboard = with builtins; readFile "/sys/devices/virtual/dmi/id/product_name"
+        |> replaceStrings [ " " "\n" "\t" ] [ "" "" "" ];
+      nixos-hardware = inputs.nixos-hardware.nixosModules;
+    in {
+      
+      nixosConfigurations.nixos = nixpkgs.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = { inherit inputs; };
+        modules = [
+          ./configuration.nix
+        ] ++ ( if motherboard == "MS-7C51"    then [
+          ./MS-7C51.nix
+          nixos-hardware.common-cpu-amd
+          nixos-hardware.common-gpu-amd
+        ] else if motherboard == "20L8S7GJ05" then [
+          nixos-hardware.lenovo-thinkpad-t480s
+        ] else []
+        ) ++ builtins.trace "Motherboard: `${motherboard}`" [];
+      };
     };
-  };
 }

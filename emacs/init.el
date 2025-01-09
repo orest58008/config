@@ -29,7 +29,7 @@
 (when (get-buffer "*scratch*") (kill-buffer "*scratch*"))
 
 ;; Save between sessions
-(desktop-save-mode t)
+(desktop-save-mode)
 
 ;; Set up text width
 (setopt fill-column 99)
@@ -89,7 +89,10 @@
                       corfu-auto-delay 0.25
                       corfu-popupinfo-delay 0)
   :hook (prog-mode conf-mode)
-  :hook (corfu-mode . corfu-popupinfo-mode))
+  :hook
+  (corfu-mode . corfu-echo-mode)
+  (corfu-mode . corfu-history-mode)
+  (corfu-mode . corfu-popupinfo-mode))
 
 ;; dashboard
 (use-package dashboard
@@ -106,10 +109,13 @@
   (dashboard-set-file-icons t)
   (dashboard-set-heading-icons t)
   :custom ; display items
-  (dashboard-items '((recents  . 15)
-                     (projects . 5)
-                     (agenda   . 5)))
+  (dashboard-items '((recents  . 10)
+                     (projects . 10)))
   (dashboard-projects-backend 'projectile))
+
+;; editorconfig
+(use-package editorconfig
+  :config (editorconfig-mode 1))
 
 ;; elcord
 (use-package elcord
@@ -145,16 +151,17 @@
 
 ;; ligature
 (use-package ligature
-  :config (ligature-set-ligatures 'prog-mode '("!=" "!==" "!===" "(*" "*)" "*+" "*/" "*=" "+*" "++"
-                                               "+++" "--->" "-->" "-<" "-<-" "-<<" "->" "->-" "->>"
-                                               "-|" ".>" "/*" "/=" "/>" "/\\" "::" ":::" ":=" ":>"
-                                               "<!--" "<!---" "<*" "<*>" "<-" "<--" "<---" "<---->"
-                                               "<--->" "<-->" "<->" "<." "<.>" "</" "</>" "<:"
-                                               "<<-" "<<=" "<=" "<==" "<===" "<====>" "<===>"
-                                               "<==>" "<=>" "<>" "<|" "<|>" "<~~" "=!=" "=*" "=/="
-                                               "=:" "=<" "=<<" "=<=" "==" "===" "===>" "==>" "=>"
-                                               "=>=" "=>>" ">-" ">=" ">>-" ">>=" "[|" "\\/" "__"
-                                               "{|" "|-" "|>" "|]" "|}" "~=" "~~>" )) ; Iosevka
+  :config (ligature-set-ligatures 'prog-mode '("!=" "!==" "!===" "(*" "*)" "*+" "*-" "*/" "*=" "+*"
+                                               "++" "+++" "-*" "-*-" "--" "---" "--->" "-->" "-<"
+                                               "-<-" "-<<" "->" "->-" "->>" "-|" ".>" "/*" "/="
+                                               "/>" "/\\" "::" ":::" ":=" ":>" "<!--" "<!---" "<*"
+                                               "<*>" "<-" "<--" "<---" "<---->" "<--->" "<-->"
+                                               "<->" "<." "<.>" "</" "</>" "<:" "<<-" "<<=" "<="
+                                               "<==" "<===" "<====>" "<===>" "<==>" "<=>" "<>" "<|"
+                                               "<|>" "<~~" "=!=" "=*" "=/=" "=:" "=<" "=<<" "=<="
+                                               "==" "===" "===>" "==>" "=>" "=>=" "=>>" ">-" ">="
+                                               ">>-" ">>=" "[|" "\\/" "__" "___" "{|" "|-" "|>"
+                                               "|]" "|}" "~=" "~~>")) ; Iosevka
   :hook (prog-mode conf-mode))
 
 ;; neotree
@@ -202,13 +209,17 @@
 (use-package haskell-mode)
 (use-package lsp-haskell)
 
+;; Nix
+(use-package nix-mode
+  :mode "\\.nix\\'")
+
 ;; Org
 (use-package org-modern
   :hook org-mode)
 
                                         ; CUSTOM FUNCTIONS
 ;; VSCode-like pop-up terminal
-(defun popup-term-below (&optional HEIGHT)
+(defun my/popup-term-below (&optional HEIGHT)
   (interactive)
   (split-window-below)
   (other-window 1)
@@ -218,6 +229,6 @@
    (get-buffer-process (current-buffer)) nil)
   (evil-insert-state))
 (evil-define-key '(insert normal) 'global
-  (kbd "C-`") 'popup-term-below)
+  (kbd "C-`") 'my/popup-term-below)
 (evil-define-key 'insert 'term-mode-map
   (kbd "C-`") 'delete-window)

@@ -5,6 +5,7 @@
     let unstable = inputs.nixpkgs-unstable.legacyPackages."${pkgs.system}";
     in {
       packages = with pkgs; [
+        noto-fonts
         source-han-sans
         source-han-serif
         source-sans
@@ -17,7 +18,7 @@
         defaultFonts = {
           sansSerif = [ "Source Sans 3" ];
           serif = [ "Source Serif 4" ];
-          monospace = [ "Iosevka Extended" "Iosevka Nerd Font Propo" ];
+          monospace = [ "Iosevka Nerd Font Propo" "Iosevka Extended" ];
           emoji = [ "Twitter Color Emoji" ];
         };
       };

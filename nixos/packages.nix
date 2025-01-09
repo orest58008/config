@@ -25,7 +25,7 @@
     gnupg.agent.enable = true;
     steam = {
       enable = true;
-      extest.enable = true;
+      # extest.enable = true;
     };
     zsh = {
       enable = true;
@@ -41,6 +41,7 @@
       consolePackages = with pkgs; [
         aria2
         bat
+        busybox
         distrobox
         eza
         fd
@@ -48,7 +49,9 @@
         git-lfs
         gnumake
         gnupg
+        htop
         jq
+        python3
         starship
         tealdeer
         trash-cli
@@ -97,8 +100,10 @@
         rhythmbox
         steam
         telegram-desktop
+        transmission_4-gtk
         unstable.ghostty
         vesktop
+        vscodium-fhs
         zoom-us
       ];
 

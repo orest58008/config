@@ -5,17 +5,22 @@
 { config, lib, pkgs, ... }:
 
 {
-  imports = [ ./hardware-configuration.nix ./fonts.nix ./packages.nix ./users.nix ];
+  imports = [
+    ./fonts.nix
+    ./hardware-configuration.nix
+    ./packages.nix
+    ./users.nix
+  ];
 
   boot = {
     # crashDump.enable = true;
 
     loader = {
+      efi.canTouchEfiVariables = true;
       systemd-boot = {
         enable = true;
         memtest86.enable = true;
       };
-      efi.canTouchEfiVariables = true;
     };
   };
 
@@ -74,8 +79,10 @@
 
     pipewire = {
       enable = true;
-      alsa.enable = true;
-      alsa.support32Bit = true;
+      alsa = {
+        enable = true;
+        support32Bit = true;
+      };
       pulse.enable = true;
     };
 
@@ -90,8 +97,8 @@
         xorg.xprop
       ];
 
-      displayManager.gdm.enable = true;
       desktopManager.gnome.enable = true;
+      displayManager.gdm.enable = true;
     };
   };
 

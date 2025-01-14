@@ -22,6 +22,13 @@
         memtest86.enable = true;
       };
     };
+
+    plymouth = {
+      enable = true;
+      font = "${pkgs.source-sans}/share/fonts/truetype/SourceSans3-Regular.ttf";
+      theme = "nixos-bgrt";
+      themePackages = with pkgs; [ nixos-bgrt-plymouth ];
+    };
   };
 
   hardware = {
@@ -100,6 +107,8 @@
       desktopManager.gnome.enable = true;
       displayManager.gdm.enable = true;
     };
+
+    yggdrasil.enable = true;
   };
 
   security = {

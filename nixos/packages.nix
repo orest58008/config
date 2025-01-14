@@ -51,11 +51,14 @@
         gnupg
         htop
         jq
-        python3
+        lm_sensors
+        openvpn
         starship
+        steam-run
         tealdeer
         trash-cli
         vim
+        wl-clipboard
         zsh
       ];
 
@@ -67,16 +70,18 @@
         posy-cursors
       ];
 
-      emacsPackages = with pkgs; [
+      devPackages = with pkgs; [
         deno
         emacs29-pgtk
-        (haskell-language-server.override { supportedGhcVersions = [ "96" ]; })
         jdt-language-server
         nil
-        python3Packages.python-lsp-server
+        openjdk
+        pyright
+        python3
       ];
 
       programPackages = with pkgs; [
+        abiword
         baobab
         celluloid
         cheese
@@ -93,7 +98,6 @@
         gnome-sound-recorder
         gnome-tweaks
         inkscape
-        libreoffice
         nautilus
         nicotine-plus
         obs-studio
@@ -112,17 +116,13 @@
         gcc
         groff
         linuxHeaders
-        openjdk
-        openvpn
-        steam-run
         wineWowPackages.wayland
-        wl-clipboard
       ];
 
     in builtins.concatLists [
       consolePackages
       desktopPackages
-      emacsPackages
+      devPackages
       programPackages
       servicePackages
     ];

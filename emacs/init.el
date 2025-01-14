@@ -217,6 +217,13 @@
 (use-package org-modern
   :hook org-mode)
 
+;; Python
+(use-package lsp-pyright
+  :custom (lsp-pyright-langserver-command "pyright") ;; or basedpyright
+  :hook (python-mode . (lambda ()
+                          (require 'lsp-pyright)
+                          (lsp))))  ; or lsp-deferred
+
                                         ; CUSTOM FUNCTIONS
 ;; VSCode-like pop-up terminal
 (defun my/popup-term-below (&optional HEIGHT)

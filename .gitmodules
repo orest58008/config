@@ -1,0 +1,6 @@
+[submodule "emacs"]
+	path = emacs
+	url = git@codeberg.org:orest58008/emacs.git
+[submodule "nixos"]
+	path = nixos
+	url = git@codeberg.org:orest58008/nixos.git
